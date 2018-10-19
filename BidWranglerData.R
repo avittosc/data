@@ -1,7 +1,25 @@
 setwd("~/Dropbox/bid-data-20181015")
-accounts = read.csv("accounts.csv", stringsAsFactors = FALSE, header=T)
-ID = accounts$id
-SIC = accounts$sign_in_count
-LSI = accounts$last_sign_in_at
-LSIP = accounts$last_sign_in_ip
-plot(SIC, LSIP)
+
+
+library(readr)
+accounts = read_csv("~/Downloads/accounts.csv")
+IDaccounts = na.omit(accounts$`ƒ"id"`)
+SICaccounts = na.omit(accounts$sign_in_count)
+LSIaccounts = na.omit(accounts$last_sign_in_at)
+LSIPaccounts = na.omit(accounts$last_sign_in_ip)
+
+
+library(readr)
+auctions <- read_csv("~/Downloads/bid-data-20181015/auctions.csv")
+IDauctions = na.omit(auctions$id)
+CIDauctions = na.omit(auctions$company_id)
+ZIPauctions = na.omit(auctions$l.zip)
+TZauctions = na.omit(auctions$timezone)
+SAauctions = na.omit(auctions$starts_at)
+SEDauctions = na.omit(auctions$scheduled_end_time)
+ICauctions = na.omit(auctions$items_count)
+OOauctions = na.omit(auctions$online_only)
+AtLauctions = na.omit(auctions$advance_to_live)
+Brauctions = na.omit(auctions$broadcast)
+CSLauctions = na.omit(auctions$closing_speed_lots)
+CSMauctions = na.omit(auctions$closing_speed_minutes)
