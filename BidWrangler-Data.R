@@ -1,3 +1,4 @@
+# BidWrangler bid data analysis
 setwd("~/Dropbox/bid-data-20181015")
 library(readr)
 install.packages("dplyr")
