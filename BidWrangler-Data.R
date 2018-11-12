@@ -91,7 +91,8 @@ View(auctions)
     summary(CSMauctions)
     boxplot.stats(CSMauctions)$out 
 
-
+# users
+# CLEAN
 users = read_csv("Updated_Data_CSVs/users.csv")
   IDusers = as.factor(na.omit(users$id))
     is.factor(IDusers)
@@ -206,41 +207,6 @@ bids = bids[-grep('2',bids$company_id),]
     PAbids = na.omit(bids$placed_at)
     PAbids = as.POSIXlt(PAbids, tz="", format = "%Y-%m-%d %H:%M:%OS")
   
-
-
-
-# items 
-# CLEAN
-install.packages("data.table", type = "source", repos = getOption("http://Rdatatable.github.io/data.table"))
-items = fread("~/Desktop/Updated_Data_CSVs/items.csv", header=TRUE, sep=",")
-items = items[-grep('2',items$company_id),]
-  IDitems = na.omit(items$id)
-  CIDitems = as.factor(na.omit(items$company_id))
-    is.factor(CIDitems)
-    levels(CIDitems)
-  AIDitems = as.factor(na.omit(items$auction_id))
-    is.factor(AIDitems)
-    levels(AIDitems)
-  SEQitems = na.omit(items$sequence)
-    is.numeric(SEQitems)
-    SEQitems
-    summary(SEQitems)
-  LIDitems = na.omit(items$lot_identifier)
-    is.numeric(LIDitems)
-  STitems = as.factor(na.omit(items$status))
-    is.factor(STitems)
-    levels(STitems)
-  STitems = factor(STitems)
-  CBIDitems = na.omit(items$closing_bid_id)
-  SAitems = na.omit(items$start_amount)
-    is.numeric(SAitems)
-  MAitems = na.omit(items$minimum_amount)
-  AEIitems = na.omit(items$autoextend_increment)
-  AETitems = na.omit(items$actual_end_time)
-    AETitems
-  ABCitems = na.omit(items$accepted_bid_count)
-  MCitems = na.omit(items$manual_close)
-  AEitems = na.omit(items$autoextensions)
   
   
   
