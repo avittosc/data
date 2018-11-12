@@ -224,11 +224,4 @@ bids = bids[-grep('2',bids$company_id),]
   
   
   
-  
-  
-  
-  
-  # this isn't used but good to have   
-  # bids %>%
-  # select(bid_type)    %>%
-  # filter(bid_type == "auto", "live", "manual")
+
