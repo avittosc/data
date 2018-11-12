@@ -1,5 +1,5 @@
 # BidWrangler bid data analysis
-setwd("~/Dropbox/bid-data-20181015")
+
 library(readr)
 install.packages("dplyr")
 library(dplyr)
@@ -9,9 +9,16 @@ install.packages("tidyr")
 library(tidyr)
 install.packages("tidyverse")
 library(tidyverse)
+install.packages("data.table")
+library(data.table)
+install.packages("data.table")
+library(data.table)
+
+
 
 # accounts 
-accounts = read_csv("Desktop/accounts.csv", quote = "\"")
+# CLEAN 
+accounts = read_csv("Updated_Data_CSVs/accounts.csv", quote = "\"")
 accounts = accounts[-grep('bidwrangler',accounts$email),]
 accounts = accounts[-grep('cottonwood',accounts$email),]
   IDaccounts = as.factor(na.omit(accounts$id))
@@ -27,11 +34,13 @@ accounts = accounts[-grep('cottonwood',accounts$email),]
 # Detecting Outliers for accounts 
 summary(SICaccounts)
 boxplot.stats(SICaccounts)$out          #lots of outliers, this is fine
-
 summary(LSIaccounts)                    
 
 
-auctions = read_delim("Desktop/auctions.csv", ",", quote = "\"", escape_double = TRUE)
+
+# auctions 
+# CLEAN 
+auctions = read_delim("Updated_Data_CSVs/auctions.csv", ",", quote = "\"", escape_double = TRUE)
 auctions = auctions[-grep('2',auctions$company_id),]
 View(auctions)
   IDauctions = as.factor(na.omit(auctions$id))
@@ -44,17 +53,16 @@ View(auctions)
     ZIPauctions = na_if(ZIPauctions, '-')
     ZIPauctions = na.omit(ZIPauctions)
     is(ZIPauctions)
+    ZIPauctions
   TZauctions = as.factor(na.omit(auctions$timezone))
-  TZauctions = na_if(TZauctions, 'KS [ONLINE]"')
-  TZauctions = na_if(TZauctions, "Texas's Oldest Dance Hall")
-  levels(TZauctions)
+    levels(TZauctions)
   SAauctions = na.omit(auctions$starts_at)
   SAauctions = as.POSIXlt(SAauctions, tz="", format = "%Y-%m-%d %H:%M:%OS")
   SAauctions
   
-  SEDauctions = na.omit(as.POSIXlt(auctions$scheduled_end_time, tz="", format = "%Y-%m-%d %H:%M:%OS"))
-  SEDauctions = na_if(SEDauctions, "1969-12-31 19:00:00 EST")
-  SEDauctions = na_if(SEDauctions, "1970-01-01 00:00:00 UTC")
+  SEDauctions = as.POSIXlt(auctions$scheduled_end_time, tz="", format = "%Y-%m-%d %H:%M:%OS")
+  SEDauctions = na_if(SEDauctions, '1969-12-31 19:00:00 EST')
+  SEDauctions = na_if(SEDauctions, '1970-01-01 00:00:00 UTC')
   SEDauctions = na.omit(SEDauctions)
   SEDauctions
   
@@ -84,7 +92,7 @@ View(auctions)
     boxplot.stats(CSMauctions)$out 
 
 
-users = read_csv("Desktop/users.csv")
+users = read_csv("Updated_Data_CSVs/users.csv")
   IDusers = as.factor(na.omit(users$id))
     is.factor(IDusers)
     levels(IDusers)
@@ -101,14 +109,12 @@ users = read_csv("Desktop/users.csv")
   ZIPusers = na.omit(users$l.zip)
     is(ZIPusers)
 
-items = scan(file = "Desktop/items.csv", what = double(), sep = "",
-         quote = if(identical("", "\n")) "" else "'\"", dec = ".")
-
-items = read_delim("Desktop/items.csv", delim = ',', quote = "", escape_double = TRUE)
-items = read.delim("Desktop/items.csv", quote = "\"")
-# items = read_csv("Desktop/items.csv")
+    
+# items
+# CLEAN
+install.packages("data.table", type = "source", repos = getOption("http://Rdatatable.github.io/data.table"))
+items = fread("~/Desktop/Updated_Data_CSVs/items.csv", header=TRUE, sep=",")
 items = items[-grep('2',items$company_id),]
-View(items)
   IDitems = na.omit(items$id)
   CIDitems = as.factor(na.omit(items$company_id))
     is.factor(CIDitems)
@@ -117,25 +123,25 @@ View(items)
     is.factor(AIDitems)
     levels(AIDitems)
   SEQitems = na.omit(items$sequence)
-      is.numeric(SEQitems)
-      SEQitems
-      summary(SEQitems)
+    is.numeric(SEQitems)
+    SEQitems
+    summary(SEQitems)
   LIDitems = na.omit(items$lot_identifier)
     is.numeric(LIDitems)
   STitems = as.factor(na.omit(items$status))
     is.factor(STitems)
     levels(STitems)
-  STitems = factor(STitems)
   CBIDitems = na.omit(items$closing_bid_id)
   SAitems = na.omit(items$start_amount)
     is.numeric(SAitems)
   MAitems = na.omit(items$minimum_amount)
   AEIitems = na.omit(items$autoextend_increment)
   AETitems = na.omit(items$actual_end_time)
-  AETitems
+    AETitems
   ABCitems = na.omit(items$accepted_bid_count)
   MCitems = na.omit(items$manual_close)
   AEitems = na.omit(items$autoextensions)
+    
 
 # Detecting Outliers
 boxplot.stats(AEitems)$out      # some outliers seem fake
@@ -152,15 +158,21 @@ boxplot.stats(MCitems)$out
 summary(AEitems)
 
 
-companies = read_csv("Desktop/companies.csv")
+# companies 
+# CLEAN
+companies = read_csv("Updated_Data_CSVs/companies.csv")
 companies = companies[-grep('2', companies$id),]
   IDcompanies = na.omit(companies$id)
-    is.numeric(IDcompanies)
+    IDcompanies = as.factor(IDcompanies)
+    is.factor(IDcompanies)
+    levels(IDcompanies)
   ZIPcompanies = na.omit(companies$l.zip)
-    is.numeric(ZIPcompanies)
+    is(ZIPcompanies)
 
 
-bids = read_csv("Desktop/bids.csv")
+# bids 
+# CLEAN
+bids = read_csv("Updated_Data_CSVs/bids.csv")
 # this is what I used to remove all rows that != "auto", "live", "manual" for bid_type 
 bids = bids[-grep('remote',bids$bid_type),]
 bids = bids[-grep('ask', bids$bid_type),]
@@ -194,14 +206,48 @@ bids = bids[-grep('2',bids$company_id),]
     PAbids = na.omit(bids$placed_at)
     PAbids = as.POSIXlt(PAbids, tz="", format = "%Y-%m-%d %H:%M:%OS")
   
-  PAbids
 
+
+
+# items 
+# CLEAN
+install.packages("data.table", type = "source", repos = getOption("http://Rdatatable.github.io/data.table"))
+items = fread("~/Desktop/Updated_Data_CSVs/items.csv", header=TRUE, sep=",")
+items = items[-grep('2',items$company_id),]
+  IDitems = na.omit(items$id)
+  CIDitems = as.factor(na.omit(items$company_id))
+    is.factor(CIDitems)
+    levels(CIDitems)
+  AIDitems = as.factor(na.omit(items$auction_id))
+    is.factor(AIDitems)
+    levels(AIDitems)
+  SEQitems = na.omit(items$sequence)
+    is.numeric(SEQitems)
+    SEQitems
+    summary(SEQitems)
+  LIDitems = na.omit(items$lot_identifier)
+    is.numeric(LIDitems)
+  STitems = as.factor(na.omit(items$status))
+    is.factor(STitems)
+    levels(STitems)
+  STitems = factor(STitems)
+  CBIDitems = na.omit(items$closing_bid_id)
+  SAitems = na.omit(items$start_amount)
+    is.numeric(SAitems)
+  MAitems = na.omit(items$minimum_amount)
+  AEIitems = na.omit(items$autoextend_increment)
+  AETitems = na.omit(items$actual_end_time)
+    AETitems
+  ABCitems = na.omit(items$accepted_bid_count)
+  MCitems = na.omit(items$manual_close)
+  AEitems = na.omit(items$autoextensions)
   
-# this isn't used but good to have   
-# bids %>%
-   # select(bid_type)    %>%
-   # filter(bid_type == "auto", "live", "manual")
- 
-
-
-
+  
+  
+  
+  
+  
+  # this isn't used but good to have   
+  # bids %>%
+  # select(bid_type)    %>%
+  # filter(bid_type == "auto", "live", "manual")
