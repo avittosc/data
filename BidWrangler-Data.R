@@ -60,10 +60,12 @@ View(auctions)
   SAauctions = as.POSIXlt(SAauctions, tz="", format = "%Y-%m-%d %H:%M:%OS")
   SAauctions
   
-  SEDauctions = as.POSIXlt(auctions$scheduled_end_time, tz="", format = "%Y-%m-%d %H:%M:%OS")
-  SEDauctions = na_if(SEDauctions, '1969-12-31 19:00:00 EST')
-  SEDauctions = na_if(SEDauctions, '1970-01-01 00:00:00 UTC')
-  SEDauctions = na.omit(SEDauctions)
+  auctions$scheduled_end_time = as.POSIXlt(na.omit(auctions$scheduled_end_time), tz="", format = "%Y-%m-%d %H:%M:%OS")
+  auctions$scheduled_end_time = na_if(auctions$scheduled_end_time, '1969-12-31 19:00:00 EST')
+  auctions$scheduled_end_time = na_if(auctions$scheduled_end_time, '1970-01-01 00:00:00 UTC')
+  auctions$scheduled_end_time = na.omit(auctions$scheduled_end_time)
+  is.na(auctions$scheduled_end_time)
+  SEDauctions = auctions$scheduled_end_time[!is.na(auctions$scheduled_end_time)]
   SEDauctions
   
   ICauctions = na.omit(auctions$items_count)
@@ -117,6 +119,7 @@ install.packages("data.table", type = "source", repos = getOption("http://Rdatat
 items = fread("~/Desktop/Updated_Data_CSVs/items.csv", header=TRUE, sep=",")
 items = items[-grep('2',items$company_id),]
   IDitems = na.omit(items$id)
+    is.numeric(IDitems)
   CIDitems = as.factor(na.omit(items$company_id))
     is.factor(CIDitems)
     levels(CIDitems)
@@ -137,11 +140,18 @@ items = items[-grep('2',items$company_id),]
     is.numeric(SAitems)
   MAitems = na.omit(items$minimum_amount)
   AEIitems = na.omit(items$autoextend_increment)
-  AETitems = na.omit(items$actual_end_time)
+    is.numeric(AEIitems)
+  AETitems = as.POSIXlt(na.omit(items$actual_end_time), tz="", format = "%Y-%m-%d %H:%M:%OS")
     AETitems
+    is(AETitems)
   ABCitems = na.omit(items$accepted_bid_count)
+    is.numeric(ABCitems)
   MCitems = na.omit(items$manual_close)
+    is.numeric(MCitems)
+    summary(MCitems)
   AEitems = na.omit(items$autoextensions)
+    is.numeric(AEitems)
+    summary(AEitems)
     
 
 # Detecting Outliers
