@@ -1,5 +1,9 @@
 # BidWrangler bid data analysis
 
+
+
+# Data Cleaning 
+
 library(readr)
 install.packages("dplyr")
 library(dplyr)
@@ -21,9 +25,8 @@ library(data.table)
 accounts = read_csv("Updated_Data_CSVs/accounts.csv", quote = "\"")
 accounts = accounts[-grep('bidwrangler',accounts$email),]
 accounts = accounts[-grep('cottonwood',accounts$email),]
-  IDaccounts = as.factor(na.omit(accounts$id))
-    is.factor(IDaccounts)
-    levels(IDaccounts)
+  IDaccounts = as.numeric(na.omit(accounts$id))
+    is.numeric(IDaccounts)
   SICaccounts = na.omit(accounts$sign_in_count)
     is.numeric(SICaccounts)          
   LSIaccounts = na.omit(accounts$last_sign_in_at)
@@ -43,11 +46,11 @@ summary(LSIaccounts)
 auctions = read_delim("Updated_Data_CSVs/auctions.csv", ",", quote = "\"", escape_double = TRUE)
 auctions = auctions[-grep('2',auctions$company_id),]
 View(auctions)
-  IDauctions = as.factor(na.omit(auctions$id))
-    is.factor(IDauctions)
+  IDauctions = as.numeric(na.omit(auctions$id))
+    is.numeric(IDauctions)
     IDauctions
-  CIDauctions = as.factor(na.omit(auctions$company_id))
-    is.factor(CIDauctions)
+  CIDauctions = as.numeric(na.omit(auctions$company_id))
+    is.numeric(CIDauctions)
     IDauctions
   ZIPauctions = na.omit(auctions$l.zip)
     ZIPauctions = na_if(ZIPauctions, '-')
@@ -96,18 +99,16 @@ View(auctions)
 # users
 # CLEAN
 users = read_csv("Updated_Data_CSVs/users.csv")
-  IDusers = as.factor(na.omit(users$id))
-    is.factor(IDusers)
-    levels(IDusers)
-  AIDusers = as.factor(na.omit(users$account_id))
-    is.factor(AIDusers)
-    levels(AIDusers)
+  IDusers = as.numeric(na.omit(users$id))
+    is.numeric(IDusers)
+  AIDusers = as.numeric(na.omit(users$account_id))
+    is.numeric(AIDusers)
   DRSusers = na.omit(users$default_registration_status)
     DRSusers = as.factor(DRSusers)
     is.factor(DRSusers)
     levels(DRSusers)
-  PCIDusers = as.factor(na.omit(users$payment_customer_id))
-    as.factor(PCIDusers)
+  PCIDusers = as.numeric(na.omit(users$payment_customer_id))
+    as.numeric(PCIDusers)
     levels(PCIDusers)
   ZIPusers = na.omit(users$l.zip)
     is(ZIPusers)
@@ -120,12 +121,10 @@ items = fread("~/Desktop/Updated_Data_CSVs/items.csv", header=TRUE, sep=",")
 items = items[-grep('2',items$company_id),]
   IDitems = na.omit(items$id)
     is.numeric(IDitems)
-  CIDitems = as.factor(na.omit(items$company_id))
-    is.factor(CIDitems)
-    levels(CIDitems)
-  AIDitems = as.factor(na.omit(items$auction_id))
-    is.factor(AIDitems)
-    levels(AIDitems)
+  CIDitems = as.numeric(na.omit(items$company_id))
+    is.numeric(CIDitems)
+  AIDitems = as.numeric(na.omit(items$auction_id))
+    is.numeric(AIDitems)
   SEQitems = na.omit(items$sequence)
     is.numeric(SEQitems)
     SEQitems
@@ -174,9 +173,8 @@ summary(AEitems)
 companies = read_csv("Updated_Data_CSVs/companies.csv")
 companies = companies[-grep('2', companies$id),]
   IDcompanies = na.omit(companies$id)
-    IDcompanies = as.factor(IDcompanies)
-    is.factor(IDcompanies)
-    levels(IDcompanies)
+    IDcompanies = as.numeric(IDcompanies)
+    is.numeric(IDcompanies)
   ZIPcompanies = na.omit(companies$l.zip)
     is(ZIPcompanies)
 
@@ -196,20 +194,20 @@ bids = bids[-grep('2',bids$company_id),]
   # auto = came from a maxbid
   # manual = came from a remote bidder place a specific bid (i.e. clicking the “BID $1,000” button in the app/website)
   IDbids = na.omit(bids$id)
-    IDbids = as.factor(IDbids)
-    levels(IDbids)
+    IDbids = as.numeric(IDbids)
+    is.numeric(IDbids)
   CIDbids = na.omit(bids$company_id)
-    CIDbids = as.factor(CIDbids)
-    levels(CIDbids)
+    CIDbids = as.numeric(CIDbids)
+    is.numeric(CIDbids)
   AIDbids = na.omit(bids$auction_id)
-    AIDbids = as.factor(AIDbids)
-    levels(AIDbids)
+    AIDbids = as.numeric(AIDbids)
+    is.numeric(AIDbids)
   IIDbids = na.omit(bids$item_id)
-    IIDbids = as.factor(IIDbids)
-    levels(IIDbids)
+    IIDbids = as.numeric(IIDbids)
+    is.numeric(IIDbids)
   UIDbids = na.omit(bids$user_id)
-    UIDbids = as.factor(UIDbids)
-    levels(UIDbids)
+    UIDbids = as.numeric(UIDbids)
+    is.numeric(UIDbids)
   Abids = na.omit(bids$amount)
     is.numeric(Abids)
     summary(Abids)
@@ -219,9 +217,129 @@ bids = bids[-grep('2',bids$company_id),]
   BTbids = factor(na.omit(bids$bid_type))
     is.factor(BTbids)
     levels(BTbids)
-    PAbids = na.omit(bids$placed_at)
+  PAbids = na.omit(bids$placed_at)
     PAbids = as.POSIXlt(PAbids, tz="", format = "%Y-%m-%d %H:%M:%OS")
   
-  
-  
 
+    
+    
+    
+    
+# Data Analysis
+  install.packages("car")
+  library(car)
+  
+  # Separating Categorical Objects into Boolean Objects 
+  
+  TZauctions
+  levels(TZauctions)
+    GMTm10.auctions = (TZauctions == "GMT-10")
+      GMTm10.auctions = ifelse(GMTm10.auctions == TRUE, 1, 0)
+      GMTm10.auctions
+    GMTm5.auctions = (TZauctions == "GMT-5") 
+      GMTm5.auctions = ifelse(GMTm5.auctions == TRUE, 1, 0)
+      GMTm5.auctions
+    GMTm6.auctions = (TZauctions == "GMT-6")
+      GMTm6.auctions = ifelse(GMTm6.auctions == TRUE, 1, 0)
+      GMTm6.auctions
+    GMTm7.auctions = (TZauctions == "GMT-7")
+      GMTm7.auctions = ifelse(GMTm7.auctions == TRUE, 1, 0)
+      GMTm7.auctions
+    GMTm8.auctions = (TZauctions == "GMT-8") 
+      GMTm8.auctions = ifelse(GMTm8.auctions == TRUE, 1, 0)
+      GMTm8.auctions
+    GMTp11.auctions = (TZauctions == "GMT+11") 
+      GMTp11.auctions = ifelse(GMTp11.auctions == TRUE, 1, 0)
+      GMTp11.auctions
+    GMTp2.auctions = (TZauctions == "GMT+2") 
+      GMTp2.auctions = ifelse(GMTp2.auctions == TRUE, 1, 0)
+      GMTp2.auctions
+    GMTp6.auctions = (TZauctions == "GMT+6") 
+      GMTp6.auctions = ifelse(GMTp6.auctions == TRUE, 1, 0)
+      GMTp6.auctions
+    GMTp8.auctions = (TZauctions == "GMT+8") 
+      GMTp8.auctions = ifelse(GMTp8.auctions == TRUE, 1, 0)
+      GMTp8.auctions
+    GMTp930.auctions = (TZauctions == "GMT+9:30")
+      GMTp930.auctions = ifelse(GMTp930.auctions == TRUE, 1, 0) 
+      GMTp930.auctions
+                  
+  DRSusers
+   levels(DRSusers)
+    DRSapproved.users = (DRSusers == "approved")
+      DRSapproved.users = ifelse(DRSapproved.users == TRUE, 1, 0)
+      DRSapproved.users
+    DRSblocked.users = (DRSusers == "blocked")
+      DRSblocked.users = ifelse(DRSblocked.users == TRUE, 1, 0)
+      DRSblocked.users
+    DRSpending.users = (DRSusers == "pending")
+      DRSpending.users = ifelse(DRSpending.users == TRUE, 1, 0)
+      DRSpending.users
+  
+  STitems
+   levels(STitems)
+    STacceptingbids.items = (STitems == "accepting_bids")
+      STacceptingbids.items = ifelse(STacceptingbids.items == TRUE, 1, 0)  
+      STacceptingbids.items
+    STnosale.items = (STitems == "no_sale")
+      STnosale.items = ifelse(STnosale.items == TRUE, 1, 0)
+      STnosale.items
+    STpaused.items = (STitems == "paused")
+      STpaused.items = ifelse(STpaused.items == TRUE, 1, 0)    
+      STpaused.items 
+    STpending.items = (STitems == "pending")
+      STpending.items = ifelse(STpending.items == TRUE, 1, 0)
+      STpending.items
+    STpendingclose.items = (STitems == "pending_close")
+      STpendingclose.items = ifelse(STpendingclose.items == TRUE, 1, 0)
+      STpendingclose.items
+    STsold.items = (STitems == "sold")
+      STsold.items = ifelse(STsold.items == TRUE, 1, 0)
+      STsold.items
+    
+  STbids
+    levels(STbids)
+      STaccepted.bids = (STbids == "accepted")
+        STaccepted.bids = ifelse(STaccepted.bids == TRUE, 1, 0)
+        STaccepted.bids
+      STacceptingbids.bids = (STbids == "accepting_bids")
+        STacceptingbids.bids = ifelse(STacceptingbids.bids == TRUE, 1, 0)
+        STacceptingbids.bids
+      STcancelled.bids = (STbids == "cancelled")
+        STcancelled.bids = ifelse(STcancelled.bids == TRUE, 1, 0)
+        STcancelled.bids
+      STdeleted.bids = (STbids == "deleted")
+        STdeleted.bids = ifelse(STdeleted.bids == TRUE, 1, 0)
+        STdeleted.bids
+      STnosale.bids = (STbids == "no_sale")
+        STnosale.bids = ifelse(STnosale.bids == TRUE, 1, 0)
+        STnosale.bids
+      SToutbid.bids = (STbids == "outbid")
+        SToutbid.bids = ifelse(SToutbid.bids == TRUE, 1, 0)
+        SToutbid.bids
+      STpending.bids = (STbids == "pending")
+        STpending.bids = ifelse(STpending.bids == TRUE, 1, 0)
+        STpending.bids
+      STrejected.bids = (STbids == "rejected")
+        STrejected.bids = ifelse(STrejected.bids == TRUE, 1, 0)
+        STrejected.bids
+      STsold.bids = (STbids == "sold")
+        STsold.bids = ifelse(STsold.bids == TRUE, 1, 0)
+        STsold.bids
+        
+  BTbids
+    levels(BTbids)
+      BTauto.bids = (BTbids == "auto")
+        BTauto.bids = ifelse(BTauto.bids == TRUE, 1, 0)
+        BTauto.bids
+      BTlive.bids = (BTbids == "live")
+        BTlive.bids = ifelse(BTlive.bids == TRUE, 1, 0)
+        BTlive.bids
+      BTmanual.bids = (BTbids == "manual")
+        BTmanual.bids = ifelse(BTmanual.bids == TRUE, 1, 0)
+        BTmanual.bids
+        
+      
+      
+      
+      
