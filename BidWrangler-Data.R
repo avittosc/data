@@ -1,25 +1,24 @@
-# BidWrangler bid data analysis
+# BidWrangler Bid Data Analysis
 
+
+
+# Packages Used
+  install.packages("dplyr")
+  install.packages("lubridate")  
+  install.packages("tidyr")
+  install.packages("tidyverse")
+  install.packages("data.table")
+  install.packages("naniar")
+  library(readr)
+  library(dplyr)
+  library(lubridate)
+  library(tidyr)
+  library(tidyverse)
+  library(data.table)
+  library(naniar)
 
 
 # Data Cleaning 
-
-  library(readr)
-  install.packages("dplyr")
-  library(dplyr)
-  install.packages("lubridate")
-  library(lubridate)
-  install.packages("tidyr")
-  library(tidyr)
-  install.packages("tidyverse")
-  library(tidyverse)
-  install.packages("data.table")
-  library(data.table)
-  install.packages("data.table")
-  library(data.table)
-
-
-
   # accounts 
     # CLEAN 
       accounts = read_csv("Updated_Data_CSVs/accounts.csv", quote = "\"")
@@ -60,17 +59,15 @@
       TZauctions = as.factor(na.omit(auctions$timezone))
         levels(TZauctions)
       SAauctions = na.omit(auctions$starts_at)
-      SAauctions = as.POSIXlt(SAauctions, tz="", format = "%Y-%m-%d %H:%M:%OS")
-      SAauctions
-      
-      auctions$scheduled_end_time = as.POSIXlt(na.omit(auctions$scheduled_end_time), tz="", format = "%Y-%m-%d %H:%M:%OS")
-      auctions$scheduled_end_time = na_if(auctions$scheduled_end_time, '1969-12-31 19:00:00 EST')
-      auctions$scheduled_end_time = na_if(auctions$scheduled_end_time, '1970-01-01 00:00:00 UTC')
-      auctions$scheduled_end_time = na.omit(auctions$scheduled_end_time)
-      is.na(auctions$scheduled_end_time)
+        SAauctions = as.POSIXlt(SAauctions, tz="", format = "%Y-%m-%d %H:%M:%OS")
+        SAauctions
+        auctions$scheduled_end_time = as.POSIXlt(na.omit(auctions$scheduled_end_time), tz="", format = "%Y-%m-%d %H:%M:%OS")
+        auctions$scheduled_end_time = na_if(auctions$scheduled_end_time, '1969-12-31 19:00:00 EST')
+        auctions$scheduled_end_time = na_if(auctions$scheduled_end_time, '1970-01-01 00:00:00 UTC')
+        auctions$scheduled_end_time = na.omit(auctions$scheduled_end_time)
+        is.na(auctions$scheduled_end_time)
       SEDauctions = auctions$scheduled_end_time[!is.na(auctions$scheduled_end_time)]
-      SEDauctions
-      
+        SEDauctions
       ICauctions = na.omit(auctions$items_count)
         is.numeric(ICauctions)
         summary(ICauctions)
@@ -78,15 +75,15 @@
       OOauctions = na.omit(auctions$online_only)
         is.numeric(OOauctions)
         summary(OOauctions)               
-        # these are all 0 or 1
+          # these are all 0 or 1
       AtLauctions = na.omit(auctions$advance_to_live)
         is.numeric(AtLauctions)
         summary(AtLauctions)
-        # these are all 0 or 1
+          # these are all 0 or 1
       Brauctions = na.omit(auctions$broadcast)
         is.numeric(Brauctions)
         summary(Brauctions)
-        # these are all 0 or 1
+          # these are all 0 or 1
       CSLauctions = na.omit(auctions$closing_speed_lots)
         is.numeric(CSLauctions)
         summary(CSLauctions)
@@ -107,9 +104,8 @@
           DRSusers = as.factor(DRSusers)
           is.factor(DRSusers)
           levels(DRSusers)
-        PCIDusers = as.numeric(na.omit(users$payment_customer_id))
-          as.numeric(PCIDusers)
-          levels(PCIDusers)
+        PCIDusers = na.omit(as.numeric(users$payment_customer_id))
+          is.numeric(PCIDusers)
         ZIPusers = na.omit(users$l.zip)
           is(ZIPusers)
 
@@ -117,7 +113,7 @@
   # items
     # CLEAN
       install.packages("data.table", type = "source", repos = getOption("http://Rdatatable.github.io/data.table"))
-        items = fread("~/Desktop/Updated_Data_CSVs/items.csv", header=TRUE, sep=",")
+        items = fread("~/Desktop/github/Updated_Data_CSVs/items.csv", header=TRUE, sep=",")
         items = items[-grep('2',items$company_id),]
           IDitems = na.omit(items$id)
             is.numeric(IDitems)
@@ -129,7 +125,7 @@
             is.numeric(SEQitems)
             SEQitems
             summary(SEQitems)
-          LIDitems = na.omit(items$lot_identifier)
+          LIDitems = na.omit(as.numeric(items$lot_identifier))
             is.numeric(LIDitems)
           STitems = as.factor(na.omit(items$status))
             is.factor(STitems)
@@ -140,8 +136,7 @@
           MAitems = na.omit(items$minimum_amount)
           AEIitems = na.omit(items$autoextend_increment)
             is.numeric(AEIitems)
-          AETitems = as.POSIXlt(na.omit(items$actual_end_time), tz="", format = "%Y-%m-%d %H:%M:%OS")
-            AETitems
+          AETitems = as.POSIXlt(na.omit(items$actual_end_time), tz = "", format = "%Y-%m-%d %H:%M:%OS")
             is(AETitems)
           ABCitems = na.omit(items$accepted_bid_count)
             is.numeric(ABCitems)
@@ -337,8 +332,17 @@
           BTmanual.bids = ifelse(BTmanual.bids == TRUE, 1, 0)
           BTmanual.bids
           
-  
-        
-        
-        
-        
+          
+
+    
+    Auction_Duration_Seconds = auctions$scheduled_end_time-auctions$starts_at
+    Auction_Duration_Seconds
+    
+    auctions = cbind(auctions, Auction_Duration_Seconds)   
+    Auction_Duration_Seconds[Auction_Duration_Seconds<0] <- NA
+    View(auctions)
+    auctiondurationsecs = as.numeric(na.omit(Auction_Duration_Seconds))        
+    auctiondurationsecs      
+    summary(auctiondurationsecs)
+    
+    
