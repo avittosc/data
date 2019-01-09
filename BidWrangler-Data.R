@@ -344,5 +344,24 @@
     auctiondurationsecs = as.numeric(na.omit(Auction_Duration_Seconds))        
     auctiondurationsecs      
     summary(auctiondurationsecs)
+ 
+    
+    
+    
+    
+    
+    
+    
+  # Saving cleaned dataframes to Desktop
+    write.csv(auctions, file = "auctionsCLEAN.csv")
+    write.csv(accounts, file = "accountsCLEAN.csv")
+    write.csv(bids, file = "bidsCLEAN.csv")
+    write.csv(companies, file = "companiesCLEAN.csv")
+    write.csv(items, file = "itemsCLEAN.csv")
+    write.csv(users, file = "usersCLEAN.csv")
+    
+    
+    
+    
     
     
